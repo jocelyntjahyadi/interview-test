@@ -4,6 +4,7 @@ import { IsUniqueConstraint } from './is-unique-constraint';
 export type IsUniqueConstraintInput = {
   tableName: string;
   column: string;
+  action : string;
 };
 
 export function IsUnique(

@@ -18,12 +18,16 @@ export class UserService {
         return this.userRepository.save(user);
     }
 
-    findAll(): Promise<UserDto[]> {
+    findAll(): Promise<User[]> {
         return this.userRepository.find({where : {deletedAt : IsNull()}});
     }
 
-    findByID(id :number): Promise<User | undefined> {
+    findByID(id :number): Promise<User> {
         return this.userRepository.findOne({where:{id:id, deletedAt : IsNull()}});
+    }
+
+    userExistByID(id :number): Promise<boolean> {
+        return this.userRepository.exist({where:{ id:id, deletedAt : IsNull()}});
     }
 
     userExistByEmail(email :string): Promise<Boolean> {
