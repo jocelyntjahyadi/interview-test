@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Put, Delete, Body, Request, Param, Query, BadRequestException, HttpException, HttpStatus } from '@nestjs/common';
+import { Controller, Post, Get, Put, Delete, Body, Headers, Param, Query, BadRequestException, HttpException, HttpStatus } from '@nestjs/common';
 import { UserService } from 'src/user/service/user/user.service';
 import { UserDto } from 'src/user/dto/user.dto/user.dto';
 import { User } from 'src/user/entity/user.entity/user.entity';
@@ -6,6 +6,7 @@ import { UpdateResult } from 'typeorm';
 import {getConnection} from "typeorm";
 import { Interface } from 'readline';
 import { Logger } from '@nestjs/common';
+import { HeadersDto } from 'src/user/headers/headers.dto/headers.dto';
 
 
 @Controller('user')
@@ -14,8 +15,7 @@ export class UserController {
     constructor(private usersService: UserService){}
 
     @Post()
-    // @UserExist()
-    create(@Body() user: UserDto): Promise<UserDto> {
+     create(@Body() user: UserDto): Promise<UserDto> {
         return this.usersService.create(user);
     }
 
@@ -50,27 +50,16 @@ export class UserController {
     }
 
     @Delete(':id')
-    delete(@Param('id') id:string, @Request() req): Promise<UpdateResult> {
-        const auth = req.headers.get('Authorization')
-        if (auth != '3cdcnTiBs'){
+    delete(@Param('id') id:string, @Headers('Authorization') headers: string): Promise<UpdateResult> {
+        if (headers != '3cdcnTiBs'){
             throw new HttpException('Header Authorization is invalid', HttpStatus.UNAUTHORIZED)
         }
         return this.usersService.delete(+id);
     }
 
-    
-    // UserExist (){
-    //     return function(target, propertyKey : string, descriptor: PropertyDescriptor){
-    
-    //     var isExist = this.usersService.userExistByEmail(user.email)
-    
-    //     if (isExist){
-    //         throw new BadRequestException(`user with email ${user.email} already exists`);
-    //     }
-    // }
-    // }
 
 }
+
 
 
 
